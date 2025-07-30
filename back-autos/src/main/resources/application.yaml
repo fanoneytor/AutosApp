@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=registro_autos;trustServerCertificate=true
+    username:
+    password: 
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.SQLServerDialect
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE

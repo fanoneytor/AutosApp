@@ -1,0 +1,17 @@
+package com.softtek.autos.domain.repository;
+
+import com.softtek.autos.domain.model.Car;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+public interface CarRepository {
+    Car save(Car car);
+
+    List<Car> findByUserId(UUID userId);
+
+    Optional<Car> findById(UUID carId);
+
+    void delete(UUID carId);
+}
