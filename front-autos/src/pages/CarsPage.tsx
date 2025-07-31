@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { getCars, deleteCar, type CarSearchParams } from "../services/carService";
+import { getCars, deleteCar, updateCar, type CarSearchParams } from "../services/carService";
 import CarForm from "../components/CarForm";
+import ImageUploadModal from "../components/ImageUploadModal";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import type { Car } from "../types/car";
@@ -11,6 +12,8 @@ export default function CarsPage() {
   const [cars, setCars] = useState<Car[]>([]);
   const [editingCar, setEditingCar] = useState<Car | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [carToUpdateImage, setCarToUpdateImage] = useState<Car | null>(null);
   const [generalSearchQuery, setGeneralSearchQuery] = useState("");
   const [individualFilters, setIndividualFilters] = useState<Partial<Car>>({
     brand: "",
@@ -83,6 +86,32 @@ export default function CarsPage() {
     setIsModalOpen(false);
     setEditingCar(null);
     fetchCars(debouncedSearchParams);
+  };
+
+  const handleImageUploadClick = (car: Car) => {
+    setCarToUpdateImage(car);
+    setIsImageModalOpen(true);
+  };
+
+  const handleCloseImageModal = () => {
+    setIsImageModalOpen(false);
+    setCarToUpdateImage(null);
+    fetchCars(debouncedSearchParams);
+  };
+
+  const handleImageUpdate = async (carId: string, imageUrl: string) => {
+    try {
+      const carToUpdate = cars.find((car) => car.id === carId);
+      if (carToUpdate) {
+        await updateCar({ ...carToUpdate, imageUrl });
+        toast.success("URL de imagen actualizada exitosamente.");
+        fetchCars(debouncedSearchParams);
+      } else {
+        toast.error("Auto no encontrado.");
+      }
+    } catch (error) {
+      toast.error("Error al actualizar la URL de la imagen.");
+    }
   };
 
   const handleIndividualFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -195,16 +224,42 @@ export default function CarsPage() {
         </div>
       )}
 
+      {isImageModalOpen && (
+        <ImageUploadModal
+          car={carToUpdateImage}
+          onClose={handleCloseImageModal}
+          onSave={handleImageUpdate}
+        />
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {cars.map((car) => (
-          <div key={car.id} className="bg-white p-4 rounded shadow-md">
-            {car.imageUrl && (
-              <img
-                src={car.imageUrl}
-                alt={`${car.brand} ${car.model}`}
-                className="w-full h-48 object-cover rounded-md mb-4"
-              />
-            )}
+          <div key={car.id} className="bg-white p-4 rounded shadow-md relative">
+            <img
+              src={car.imageUrl || "/default-car-image.svg"}
+              alt={`${car.brand} ${car.model}`}
+              className="w-full h-48 object-cover rounded-md mb-4"
+            />
+            <button
+              onClick={() => handleImageUploadClick(car)}
+              className="absolute top-6 right-6 bg-gray-800 bg-opacity-75 p-2 rounded-full text-white hover:bg-opacity-100 transition-opacity"
+              title="Actualizar URL de imagen"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
+                />
+              </svg>
+            </button>
             <h3 className="text-lg font-semibold mb-2">{car.brand} {car.model}</h3>
             <p><strong>Año:</strong> {car.year}</p>
             <p><strong>Placa:</strong> {car.plate}</p>

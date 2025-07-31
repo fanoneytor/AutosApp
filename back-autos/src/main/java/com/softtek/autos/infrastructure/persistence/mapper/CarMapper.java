@@ -15,6 +15,7 @@ public class CarMapper {
         car.setYear(entity.getYear());
         car.setPlate(entity.getPlate());
         car.setColor(entity.getColor());
+        car.setImageUrl(entity.getImageUrl());
         car.setUserId(entity.getUser().getId());
         return car;
     }
@@ -27,6 +28,7 @@ public class CarMapper {
         entity.setYear(car.getYear());
         entity.setPlate(car.getPlate());
         entity.setColor(car.getColor());
+        entity.setImageUrl(car.getImageUrl());
         entity.setUser(userRepo.findById(car.getUserId()).orElseThrow());
         return entity;
     }
