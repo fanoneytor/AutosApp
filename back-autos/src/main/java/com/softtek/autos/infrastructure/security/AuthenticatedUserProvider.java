@@ -21,8 +21,10 @@ public class AuthenticatedUserProvider {
     }
 
     public User getUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
+        String userIdStr = SecurityContextHolder.getContext().getAuthentication().getName();
+        UUID userId = UUID.fromString(userIdStr);
+
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Usuario autenticado no encontrado"));
     }
 }

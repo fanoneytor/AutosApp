@@ -32,10 +32,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 if (jwtUtil.isValid(token)) {
                     UUID userId = jwtUtil.getUserIdFromToken(token);
 
-                    AuthUser.setUserId(userId);
-
                     UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
+                            new UsernamePasswordAuthenticationToken(userId.toString(), null, Collections.emptyList());
+
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
@@ -46,3 +45,4 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
     }
 }
+

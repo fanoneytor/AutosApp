@@ -25,6 +25,6 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Credenciales inválidas");
         }
 
-        return jwtUtil.generateToken(user.getUsername());
+        return jwtUtil.generateToken(user.getId());
     }
 }
