@@ -2,6 +2,7 @@ package com.softtek.autos.application.service;
 
 import com.softtek.autos.domain.model.Car;
 import com.softtek.autos.domain.repository.CarRepository;
+import com.softtek.autos.infrastructure.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,11 +35,19 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public Car update(Car car, UUID userId) {
-        return carRepository.save(car);
+        return carRepository.findByIdAndUserId(car.getId(), userId)
+                .map(existingCar -> carRepository.save(car))
+                .orElseThrow(() -> new NotFoundException("Car not found or does not belong to the user"));
     }
 
     @Override
     public void delete(UUID id, UUID userId) {
-        carRepository.delete(id);
+        carRepository.findByIdAndUserId(id, userId)
+                .ifPresentOrElse(
+                        car -> carRepository.delete(id),
+                        () -> {
+                            throw new NotFoundException("Car not found or does not belong to the user");
+                        }
+                );
     }
 }

@@ -50,6 +50,13 @@ public class CarRepositoryAdapter implements CarRepository {
     }
 
     @Override
+    public Optional<Car> findByIdAndUserId(UUID carId, UUID userId) {
+        return jpaUserRepository.findById(userId)
+                .flatMap(userEntity -> jpaCarRepository.findByIdAndUser(carId, userEntity))
+                .map(carMapper::toDomain);
+    }
+
+    @Override
     public void delete(UUID id) {
         jpaCarRepository.deleteById(id);
     }

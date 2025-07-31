@@ -13,5 +13,7 @@ public interface CarRepository {
 
     Optional<Car> findById(UUID carId);
 
+    Optional<Car> findByIdAndUserId(UUID carId, UUID userId);
+
     void delete(UUID carId);
 }
