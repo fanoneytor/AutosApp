@@ -6,12 +6,14 @@ import com.softtek.autos.infrastructure.persistence.entity.CarEntity;
 import com.softtek.autos.infrastructure.persistence.mapper.CarMapper;
 import com.softtek.autos.infrastructure.persistence.repository.JpaCarRepository;
 import com.softtek.autos.infrastructure.persistence.repository.JpaUserRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Repository
 public class CarRepositoryAdapter implements CarRepository {
     private final JpaCarRepository jpaCarRepository;
     private final JpaUserRepository jpaUserRepository;

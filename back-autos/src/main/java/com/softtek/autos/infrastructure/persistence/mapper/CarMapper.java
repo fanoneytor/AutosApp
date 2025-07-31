@@ -3,7 +3,9 @@ package com.softtek.autos.infrastructure.persistence.mapper;
 import com.softtek.autos.domain.model.Car;
 import com.softtek.autos.infrastructure.persistence.entity.CarEntity;
 import com.softtek.autos.infrastructure.persistence.repository.JpaUserRepository;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CarMapper {
     public Car toDomain(CarEntity entity) {
         Car car = new Car();

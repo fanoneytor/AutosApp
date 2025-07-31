@@ -4,7 +4,9 @@ import com.softtek.autos.domain.model.User;
 import com.softtek.autos.domain.repository.UserRepository;
 import com.softtek.autos.infrastructure.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;

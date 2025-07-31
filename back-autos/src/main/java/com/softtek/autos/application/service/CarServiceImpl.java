@@ -2,11 +2,13 @@ package com.softtek.autos.application.service;
 
 import com.softtek.autos.domain.model.Car;
 import com.softtek.autos.domain.repository.CarRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
 

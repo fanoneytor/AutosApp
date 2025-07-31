@@ -5,10 +5,12 @@ import com.softtek.autos.domain.repository.UserRepository;
 import com.softtek.autos.infrastructure.persistence.entity.UserEntity;
 import com.softtek.autos.infrastructure.persistence.mapper.UserMapper;
 import com.softtek.autos.infrastructure.persistence.repository.JpaUserRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public class UserRepositoryAdapter implements UserRepository {
     private final JpaUserRepository jpaUserRepository;
     private final UserMapper userMapper;
