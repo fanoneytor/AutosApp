@@ -26,7 +26,6 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Create Admin User
         if (userRepository.findByUsername("admin").isEmpty()) {
             User adminUser = new User();
             adminUser.setId(UUID.randomUUID());
@@ -35,15 +34,14 @@ public class DataLoader implements CommandLineRunner {
             adminUser.setRole(Role.ADMIN);
             userRepository.save(adminUser);
 
-            // Add some cars for admin
             Car car1 = new Car();
             car1.setId(UUID.randomUUID());
             car1.setBrand("Toyota");
             car1.setModel("Corolla");
             car1.setYear(2020);
-            car1.setPlate("ABC-123");
-            car1.setColor("Rojo");
-            car1.setImageUrl("https://www.toyota.com/img/vehicles/2020/corolla/gallery/exterior/color/040.png");
+            car1.setPlate("ABC123");
+            car1.setColor("ROJO");
+            car1.setImageUrl("");
             car1.setUserId(adminUser.getId());
             carRepository.save(car1);
 
@@ -52,14 +50,13 @@ public class DataLoader implements CommandLineRunner {
             car2.setBrand("Honda");
             car2.setModel("Civic");
             car2.setYear(2018);
-            car2.setPlate("DEF-456");
-            car2.setColor("Azul");
-            car2.setImageUrl("https://www.honda.com/img/vehicles/2018/civic/gallery/exterior/color/B588P.png");
+            car2.setPlate("DEF456");
+            car2.setColor("AZUL");
+            car2.setImageUrl("");
             car2.setUserId(adminUser.getId());
             carRepository.save(car2);
         }
 
-        // Create Regular User
         if (userRepository.findByUsername("user").isEmpty()) {
             User regularUser = new User();
             regularUser.setId(UUID.randomUUID());
@@ -68,15 +65,14 @@ public class DataLoader implements CommandLineRunner {
             regularUser.setRole(Role.USER);
             userRepository.save(regularUser);
 
-            // Add some cars for regular user
             Car car3 = new Car();
             car3.setId(UUID.randomUUID());
             car3.setBrand("Ford");
             car3.setModel("Focus");
             car3.setYear(2022);
-            car3.setPlate("GHI-789");
-            car3.setColor("Negro");
-            car3.setImageUrl("https://www.ford.com/img/vehicles/2022/focus/gallery/exterior/color/black.png");
+            car3.setPlate("GHI789");
+            car3.setColor("NEGRO");
+            car3.setImageUrl("");
             car3.setUserId(regularUser.getId());
             carRepository.save(car3);
         }
