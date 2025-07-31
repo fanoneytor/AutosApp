@@ -1,0 +1,177 @@
+{
+  "info": {
+    "name": "AutosApp API",
+    "description": "Colecci\u00f3n de endpoints para la API de AutosApp (registro y gesti\u00f3n de autos).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "autosapp-collection-id"
+  },
+  "item": [
+    {
+      "name": "Auth - Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/auth/register",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "register"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"stefano\",\n  \"password\": \"12345\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Auth - Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/auth/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"stefano\",\n  \"password\": \"12345\"\n}"
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.environment.set(\"token\", json.token);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cars - Crear",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/cars",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "cars"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"brand\": \"Toyota\",\n  \"model\": \"Corolla\",\n  \"year\": 2022,\n  \"plate\": \"ABC123\",\n  \"color\": \"Blue\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Cars - Listar",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/cars",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "cars"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Cars - Actualizar",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/cars/{car_id}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "cars",
+            "{{car_id}}"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"brand\": \"Nissan\",\n  \"model\": \"Sentra\",\n  \"year\": 2023,\n  \"plate\": \"XYZ456\",\n  \"color\": \"Red\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Cars - Eliminar",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/cars/{car_id}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "cars",
+            "{{car_id}}"
+          ]
+        }
+      }
+    }
+  ]
+}
