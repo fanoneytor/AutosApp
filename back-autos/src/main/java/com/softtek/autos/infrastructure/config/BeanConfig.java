@@ -14,6 +14,8 @@ import com.softtek.autos.infrastructure.persistence.repository.JpaCarRepository;
 import com.softtek.autos.infrastructure.persistence.repository.JpaUserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class BeanConfig {
@@ -38,8 +40,13 @@ public class BeanConfig {
     }
 
     @Bean
-    public RegisterUserService registerUserService(UserRepository userRepository) {
-        return new RegisterUserServiceImpl(userRepository);
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public RegisterUserService registerUserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
+        return new RegisterUserServiceImpl(userRepository, passwordEncoder, userMapper);
     }
 
     @Bean

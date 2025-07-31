@@ -2,9 +2,10 @@ package com.softtek.autos.api.controller;
 
 import com.softtek.autos.api.dto.RegisterRequest;
 import com.softtek.autos.application.service.RegisterUserService;
-import com.softtek.autos.domain.model.User;
 import com.softtek.autos.domain.repository.UserRepository;
 import com.softtek.autos.infrastructure.security.JwtUtil;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,11 +41,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        User user = new User();
-        user.setUsername(request.username());
-        user.setPassword(request.password());
-        User saved = registerUserService.register(user);
-        return ResponseEntity.ok(Map.of("id", saved.getId()));
+    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
+        registerUserService.register(request);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
