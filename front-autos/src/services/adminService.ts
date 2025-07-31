@@ -1,4 +1,4 @@
-import { axiosInstance } from "./carService"; // Reusing the configured axios instance
+import { axiosInstance, API_BASE_URL } from "../utils/api"; // Updated import path
 import { Role } from "../types/auth";
 
 export interface User {
@@ -7,7 +7,7 @@ export interface User {
   role: Role;
 }
 
-const ADMIN_API_URL = "http://localhost:8080/admin/users";
+const ADMIN_API_URL = `${API_BASE_URL}/admin/users`; // Use API_BASE_URL
 
 export const getAllUsers = async (): Promise<User[]> => {
   const response = await axiosInstance.get<User[]>(ADMIN_API_URL);

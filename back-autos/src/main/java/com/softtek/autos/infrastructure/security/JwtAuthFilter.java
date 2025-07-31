@@ -30,26 +30,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        try {
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                String token = authHeader.substring(7);
-                if (jwtUtil.isValid(token)) {
-                    UUID userId = jwtUtil.getUserIdFromToken(token);
-                    Role role = jwtUtil.getRoleFromToken(token);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            if (jwtUtil.isValid(token)) {
+                UUID userId = jwtUtil.getUserIdFromToken(token);
+                Role role = jwtUtil.getRoleFromToken(token);
 
-                    List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
+                List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
 
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(userId.toString(), null, authorities);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userId.toString(), null, authorities);
 
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-
-            filterChain.doFilter(request, response);
-        } finally {
-            AuthUser.clear();
         }
+
+        filterChain.doFilter(request, response);
     }
 }
 

@@ -3,19 +3,19 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react';
-import { axiosInstance } from './services/carService';
+import { axiosInstance } from './utils/api';
 
 function App() {
   return (
     <AuthProvider>
-      <AuthInterceptor />
+      <AxiosInterceptorSetup />
       <Outlet />
       <ToastContainer />
     </AuthProvider>
   );
 }
 
-function AuthInterceptor() {
+function AxiosInterceptorSetup() {
   const { logout, token } = useAuth();
 
   useEffect(() => {

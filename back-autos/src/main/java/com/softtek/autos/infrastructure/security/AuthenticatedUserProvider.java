@@ -17,11 +17,12 @@ public class AuthenticatedUserProvider {
     }
 
     public UUID getUserId() {
-        return getUser().getId();
+        String userIdStr = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return UUID.fromString(userIdStr);
     }
 
     public User getUser() {
-        String userIdStr = SecurityContextHolder.getContext().getAuthentication().getName();
+        String userIdStr = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UUID userId = UUID.fromString(userIdStr);
 
         return userRepository.findById(userId)

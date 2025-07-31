@@ -1,9 +1,7 @@
-import axios from "axios";
 import type { Car } from "../types/car";
+import { axiosInstance } from "../utils/api"; // Updated import path
 
-export const API_URL = "http://localhost:8080/cars";
-
-export const axiosInstance = axios.create({});
+export const API_URL = "/cars"; // Base URL is now in axiosInstance
 
 export interface CarSearchParams {
   query?: string;
