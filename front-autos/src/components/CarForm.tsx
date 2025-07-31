@@ -16,6 +16,7 @@ export default function CarForm({ car, onClose }: CarFormProps) {
     plate: "",
     color: "",
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (car) {
@@ -24,28 +25,55 @@ export default function CarForm({ car, onClose }: CarFormProps) {
       setFormData({
         brand: "",
         model: "",
-        year: 2000,
+        year: new Date().getFullYear(), // Default to current year
         plate: "",
         color: "",
       });
     }
+    setErrors({}); // Clear errors when car changes
   }, [car]);
+
+  const validate = (data: Car) => {
+    const newErrors: Record<string, string> = {};
+    if (!data.brand.trim()) newErrors.brand = "La marca es requerida.";
+    if (!data.model.trim()) newErrors.model = "El modelo es requerido.";
+    if (!data.plate.trim()) newErrors.plate = "La placa es requerida.";
+    if (!data.color.trim()) newErrors.color = "El color es requerido.";
+
+    if (data.year < 1900 || data.year > new Date().getFullYear() + 1) {
+      newErrors.year = `El año debe estar entre 1900 y ${new Date().getFullYear() + 1}.`;
+    }
+
+    return newErrors;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]:
-        name === "year"
-          ? parseInt(value)
-          : name === "plate" || name === "color"
-          ? value.toUpperCase()
-          : value,
-    }));
+    let newValue: string | number = value;
+
+    if (name === "year") {
+      newValue = parseInt(value);
+    } else if (name === "plate" || name === "color") {
+      newValue = value.toUpperCase();
+    }
+
+    setFormData((prev) => {
+      const updatedData = { ...prev, [name]: newValue };
+      setErrors(validate(updatedData)); // Validate on change
+      return updatedData;
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const formErrors = validate(formData);
+    setErrors(formErrors);
+
+    if (Object.keys(formErrors).length > 0) {
+      toast.error("Por favor, corrige los errores en el formulario.");
+      return;
+    }
+
     try {
       if (formData.id) {
         await updateCar(formData);
@@ -61,7 +89,7 @@ export default function CarForm({ car, onClose }: CarFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       <div>
         <label className="block text-sm font-medium text-gray-700">Marca</label>
         <input
@@ -69,9 +97,10 @@ export default function CarForm({ car, onClose }: CarFormProps) {
           name="brand"
           value={formData.brand}
           onChange={handleChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          className={`mt-1 block w-full border ${errors.brand ? "border-red-500" : "border-gray-300"} rounded-md shadow-sm p-2`}
           required
         />
+        {errors.brand && <p className="text-red-500 text-xs mt-1">{errors.brand}</p>}
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700">Modelo</label>
@@ -80,9 +109,10 @@ export default function CarForm({ car, onClose }: CarFormProps) {
           name="model"
           value={formData.model}
           onChange={handleChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          className={`mt-1 block w-full border ${errors.model ? "border-red-500" : "border-gray-300"} rounded-md shadow-sm p-2`}
           required
         />
+        {errors.model && <p className="text-red-500 text-xs mt-1">{errors.model}</p>}
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700">Año</label>
@@ -91,9 +121,10 @@ export default function CarForm({ car, onClose }: CarFormProps) {
           name="year"
           value={formData.year}
           onChange={handleChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          className={`mt-1 block w-full border ${errors.year ? "border-red-500" : "border-gray-300"} rounded-md shadow-sm p-2`}
           required
         />
+        {errors.year && <p className="text-red-500 text-xs mt-1">{errors.year}</p>}
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700">Placa</label>
@@ -102,9 +133,10 @@ export default function CarForm({ car, onClose }: CarFormProps) {
           name="plate"
           value={formData.plate}
           onChange={handleChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          className={`mt-1 block w-full border ${errors.plate ? "border-red-500" : "border-gray-300"} rounded-md shadow-sm p-2`}
           required
         />
+        {errors.plate && <p className="text-red-500 text-xs mt-1">{errors.plate}</p>}
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700">Color</label>
@@ -113,9 +145,10 @@ export default function CarForm({ car, onClose }: CarFormProps) {
           name="color"
           value={formData.color}
           onChange={handleChange}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          className={`mt-1 block w-full border ${errors.color ? "border-red-500" : "border-gray-300"} rounded-md shadow-sm p-2`}
           required
         />
+        {errors.color && <p className="text-red-500 text-xs mt-1">{errors.color}</p>}
       </div>
       <div className="flex justify-end space-x-2">
         <button
