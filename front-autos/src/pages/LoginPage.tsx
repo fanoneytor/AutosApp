@@ -2,12 +2,12 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { loginUser } from "../services/authService";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const { login } = useAuth();
-    const [error, setError] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -15,7 +15,7 @@ export default function LoginPage() {
             const token = await loginUser(username, password);
             login(token);
         } catch (err) {
-            setError("Credenciales inválidas");
+            toast.error("Credenciales inválidas");
         }
     };
 
@@ -23,7 +23,6 @@ export default function LoginPage() {
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-80">
                 <h2 className="text-xl font-semibold mb-4 text-center">Iniciar Sesión</h2>
-                {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
                 <input
                     type="text"
                     placeholder="Usuario"
