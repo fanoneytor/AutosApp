@@ -80,44 +80,29 @@ export default function CarsPage() {
         </div>
       )}
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead>
-            <tr>
-              <th className="py-2 px-4 border-b">Marca</th>
-              <th className="py-2 px-4 border-b">Modelo</th>
-              <th className="py-2 px-4 border-b">Año</th>
-              <th className="py-2 px-4 border-b">Placa</th>
-              <th className="py-2 px-4 border-b">Color</th>
-              <th className="py-2 px-4 border-b">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cars.map((car) => (
-              <tr key={car.id}>
-                <td className="py-2 px-4 border-b text-center">{car.brand}</td>
-                <td className="py-2 px-4 border-b text-center">{car.model}</td>
-                <td className="py-2 px-4 border-b text-center">{car.year}</td>
-                <td className="py-2 px-4 border-b text-center">{car.plate}</td>
-                <td className="py-2 px-4 border-b text-center">{car.color}</td>
-                <td className="py-2 px-4 border-b text-center">
-                  <button
-                    onClick={() => handleEdit(car)}
-                    className="bg-blue-500 text-white px-3 py-1 rounded mr-2 hover:bg-blue-600"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => handleDelete(car.id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {cars.map((car) => (
+          <div key={car.id} className="bg-white p-4 rounded shadow-md">
+            <h3 className="text-lg font-semibold mb-2">{car.brand} {car.model}</h3>
+            <p><strong>Año:</strong> {car.year}</p>
+            <p><strong>Placa:</strong> {car.plate}</p>
+            <p><strong>Color:</strong> {car.color}</p>
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => handleEdit(car)}
+                className="bg-blue-500 text-white px-3 py-1 rounded mr-2 hover:bg-blue-600"
+              >
+                Editar
+              </button>
+              <button
+                onClick={() => handleDelete(car.id)}
+                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
