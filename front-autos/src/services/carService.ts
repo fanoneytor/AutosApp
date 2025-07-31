@@ -1,36 +1,27 @@
 import axios from "axios";
 import type { Car } from "../types/car";
 
-const API_URL = "http://localhost:8080/cars";
+export const API_URL = "http://localhost:8080/cars";
 
-const getToken = (): string | null => {
-  return localStorage.getItem("token");
-};
+// Export the axios instance directly
+export const axiosInstance = axios.create();
 
-const getConfig = () => {
-  const token = getToken();
-  return {
-    headers: {
-      Authorization: token ? `Bearer ${token}` : "",
-    },
-  };
-};
-
-export const getCars = async (): Promise<Car[]> => {
-  const response = await axios.get<Car[]>(API_URL, getConfig());
+export const getCars = async (query?: string): Promise<Car[]> => {
+  const url = query ? `${API_URL}?query=${query}` : API_URL;
+  const response = await axiosInstance.get<Car[]>(url);
   return response.data;
 };
 
 export const createCar = async (car: Car): Promise<Car> => {
-  const response = await axios.post<Car>(API_URL, car, getConfig());
+  const response = axiosInstance.post<Car>(API_URL, car);
   return response.data;
 };
 
 export const updateCar = async (car: Car): Promise<Car> => {
-  const response = await axios.put<Car>(`${API_URL}/${car.id}`, car, getConfig());
+  const response = axiosInstance.put<Car>(`${API_URL}/${car.id}`, car);
   return response.data;
 };
 
 export const deleteCar = async (id: string): Promise<void> => {
-  await axios.delete(`${API_URL}/${id}`, getConfig());
+  await axiosInstance.delete(`${API_URL}/${id}`);
 };

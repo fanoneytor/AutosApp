@@ -30,10 +30,15 @@ public class CarController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CarDto>> list() {
+    public ResponseEntity<List<CarDto>> list(@RequestParam(required = false) String query) {
+        List<Car> cars;
+        if (query != null && !query.isEmpty()) {
+            cars = carService.searchByUserIdAndQuery(authUser.getUserId(), query);
+        } else {
+            cars = carService.findAllByUserId(authUser.getUserId());
+        }
         return ResponseEntity.ok(
-                carService.findAllByUserId(authUser.getUserId())
-                        .stream()
+                cars.stream()
                         .map(CarDtoMapper::toDto)
                         .collect(Collectors.toList())
         );

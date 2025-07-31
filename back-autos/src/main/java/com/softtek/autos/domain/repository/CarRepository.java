@@ -11,6 +11,8 @@ public interface CarRepository {
 
     List<Car> findByUserId(UUID userId);
 
+    List<Car> searchByUserIdAndQuery(UUID userId, String query);
+
     Optional<Car> findById(UUID carId);
 
     Optional<Car> findByIdAndUserId(UUID carId, UUID userId);

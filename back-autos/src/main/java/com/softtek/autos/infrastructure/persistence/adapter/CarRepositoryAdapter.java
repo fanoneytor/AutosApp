@@ -44,6 +44,16 @@ public class CarRepositoryAdapter implements CarRepository {
     }
 
     @Override
+    public List<Car> searchByUserIdAndQuery(UUID userId, String query) {
+        return jpaUserRepository.findById(userId)
+                .map(userEntity -> jpaCarRepository.searchByUserAndQuery(userEntity, query))
+                .orElse(List.of())
+                .stream()
+                .map(carMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Optional<Car> findById(UUID carId) {
         return jpaCarRepository.findById(carId)
                 .map(carMapper::toDomain);

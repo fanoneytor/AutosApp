@@ -29,6 +29,11 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    public List<Car> searchByUserIdAndQuery(UUID userId, String query) {
+        return carRepository.searchByUserIdAndQuery(userId, query);
+    }
+
+    @Override
     public Optional<Car> findById(UUID id) {
         return carRepository.findById(id);
     }

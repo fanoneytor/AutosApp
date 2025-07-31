@@ -11,9 +11,12 @@ public interface CarService {
 
     List<Car> findAllByUserId(UUID userId);
 
+    List<Car> searchByUserIdAndQuery(UUID userId, String query);
+
     Optional<Car> findById(UUID id);
 
     Car update(Car car, UUID userId);
 
     void delete(UUID id, UUID userId);
 }
+
