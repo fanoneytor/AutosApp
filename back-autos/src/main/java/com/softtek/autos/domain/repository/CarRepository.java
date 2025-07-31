@@ -13,6 +13,8 @@ public interface CarRepository {
 
     List<Car> searchByUserIdAndQuery(UUID userId, String query);
 
+    List<Car> filterCars(UUID userId, String brand, String model, Integer year, String plate, String color);
+
     Optional<Car> findById(UUID carId);
 
     Optional<Car> findByIdAndUserId(UUID carId, UUID userId);

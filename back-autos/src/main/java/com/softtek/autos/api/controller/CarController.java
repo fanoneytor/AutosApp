@@ -30,13 +30,28 @@ public class CarController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CarDto>> list(@RequestParam(required = false) String query) {
+    public ResponseEntity<List<CarDto>> list(
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) String brand,
+            @RequestParam(required = false) String model,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) String plate,
+            @RequestParam(required = false) String color
+    ) {
         List<Car> cars;
-        if (query != null && !query.isEmpty()) {
-            cars = carService.searchByUserIdAndQuery(authUser.getUserId(), query);
+        UUID userId = authUser.getUserId();
+
+        boolean hasGeneralQuery = query != null && !query.isEmpty();
+        boolean hasIndividualFilters = brand != null || model != null || year != null || plate != null || color != null;
+
+        if (hasGeneralQuery) {
+            cars = carService.searchByUserIdAndQuery(userId, query);
+        } else if (hasIndividualFilters) {
+            cars = carService.filterCars(userId, brand, model, year, plate, color);
         } else {
-            cars = carService.findAllByUserId(authUser.getUserId());
+            cars = carService.findAllByUserId(userId);
         }
+
         return ResponseEntity.ok(
                 cars.stream()
                         .map(CarDtoMapper::toDto)

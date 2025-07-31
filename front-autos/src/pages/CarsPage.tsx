@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCars, deleteCar } from "../services/carService";
+import { getCars, deleteCar, type CarSearchParams, } from "../services/carService";
 import CarForm from "../components/CarForm";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
@@ -9,41 +9,62 @@ export default function CarsPage() {
   const [cars, setCars] = useState<Car[]>([]);
   const [editingCar, setEditingCar] = useState<Car | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+  const [generalSearchQuery, setGeneralSearchQuery] = useState("");
+  const [individualFilters, setIndividualFilters] = useState<Partial<Car>>({
+    brand: "",
+    model: "",
+    year: undefined,
+    plate: "",
+    color: "",
+  });
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [debouncedSearchParams, setDebouncedSearchParams] = useState<CarSearchParams>({});
   const { logout } = useAuth();
 
-  const fetchCars = async (query?: string) => {
+  const fetchCars = async (params: CarSearchParams) => {
     try {
-      const data = await getCars(query);
+      const data = await getCars(params);
       setCars(data);
     } catch (error) {
       toast.error("Error al cargar los autos.");
     }
   };
 
-  // Debounce search query
+  // Debounce general search query and individual filters
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
+      const combinedParams: CarSearchParams = {};
+
+      if (generalSearchQuery.trim() !== "") {
+        combinedParams.query = generalSearchQuery.trim();
+      } else {
+        // Only apply individual filters if no general search query
+        for (const key in individualFilters) {
+          const value = individualFilters[key as keyof Partial<Car>];
+          if (value !== undefined && value !== null && String(value).trim() !== "") {
+            (combinedParams as any)[key] = value; // Cast to any to allow dynamic key assignment
+          }
+        }
+      }
+      setDebouncedSearchParams(combinedParams);
     }, 500); // 500ms debounce time
 
     return () => {
       clearTimeout(handler);
     };
-  }, [searchQuery]);
+  }, [generalSearchQuery, individualFilters]);
 
-  // Fetch cars when debounced search query changes
+  // Fetch cars when debounced search params change
   useEffect(() => {
-    fetchCars(debouncedSearchQuery);
-  }, [debouncedSearchQuery]);
+    fetchCars(debouncedSearchParams);
+  }, [debouncedSearchParams]);
 
   const handleDelete = async (id: string | undefined) => {
     if (!id) return;
     try {
       await deleteCar(id);
       toast.success("Auto eliminado exitosamente.");
-      fetchCars(debouncedSearchQuery); // Refresh with current search query
+      fetchCars(debouncedSearchParams); // Refresh with current search params
     } catch (error) {
       toast.error("Error al eliminar el auto.");
     }
@@ -62,7 +83,15 @@ export default function CarsPage() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingCar(null);
-    fetchCars(debouncedSearchQuery); // Refresh cars after form submission with current search query
+    fetchCars(debouncedSearchParams); // Refresh cars after form submission with current search params
+  };
+
+  const handleIndividualFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setIndividualFilters((prev) => ({
+      ...prev,
+      [name]: name === "year" ? (value ? parseInt(value) : undefined) : value,
+    }));
   };
 
   return (
@@ -85,12 +114,66 @@ export default function CarsPage() {
         </button>
         <input
           type="text"
-          placeholder="Buscar vehiculos..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full sm:w-1/2 px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Buscar por cualquier campo..."
+          value={generalSearchQuery}
+          onChange={(e) => setGeneralSearchQuery(e.target.value)}
+          className="px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-1/2"
         />
       </div>
+
+      <div className="mb-4">
+        <button
+          onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+          className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300"
+        >
+          {showAdvancedFilters ? "Ocultar Filtros Avanzados" : "Mostrar Filtros Avanzados"}
+        </button>
+      </div>
+
+      {showAdvancedFilters && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2 mb-4">
+          <input
+            type="text"
+            name="brand"
+            placeholder="Marca..."
+            value={individualFilters.brand || ""}
+            onChange={handleIndividualFilterChange}
+            className="px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="text"
+            name="model"
+            placeholder="Modelo..."
+            value={individualFilters.model || ""}
+            onChange={handleIndividualFilterChange}
+            className="px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="number"
+            name="year"
+            placeholder="Año..."
+            value={individualFilters.year || ""}
+            onChange={handleIndividualFilterChange}
+            className="px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="text"
+            name="plate"
+            placeholder="Placa..."
+            value={individualFilters.plate || ""}
+            onChange={handleIndividualFilterChange}
+            className="px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="text"
+            name="color"
+            placeholder="Color..."
+            value={individualFilters.color || ""}
+            onChange={handleIndividualFilterChange}
+            className="px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      )}
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">

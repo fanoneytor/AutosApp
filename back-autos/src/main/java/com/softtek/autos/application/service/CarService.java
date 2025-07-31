@@ -13,6 +13,8 @@ public interface CarService {
 
     List<Car> searchByUserIdAndQuery(UUID userId, String query);
 
+    List<Car> filterCars(UUID userId, String brand, String model, Integer year, String plate, String color);
+
     Optional<Car> findById(UUID id);
 
     Car update(Car car, UUID userId);

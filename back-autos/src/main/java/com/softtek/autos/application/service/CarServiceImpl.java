@@ -34,6 +34,11 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    public List<Car> filterCars(UUID userId, String brand, String model, Integer year, String plate, String color) {
+        return carRepository.filterCars(userId, brand, model, year, plate, color);
+    }
+
+    @Override
     public Optional<Car> findById(UUID id) {
         return carRepository.findById(id);
     }
