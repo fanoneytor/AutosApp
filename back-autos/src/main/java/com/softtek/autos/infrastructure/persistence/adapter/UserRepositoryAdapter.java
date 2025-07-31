@@ -7,8 +7,10 @@ import com.softtek.autos.infrastructure.persistence.mapper.UserMapper;
 import com.softtek.autos.infrastructure.persistence.repository.JpaUserRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserRepositoryAdapter implements UserRepository {
@@ -36,5 +38,17 @@ public class UserRepositoryAdapter implements UserRepository {
     public Optional<User> findById(UUID id) {
         return jpaUserRepository.findById(id)
                 .map(userMapper::toDomain);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return jpaUserRepository.findAll().stream()
+                .map(userMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void delete(UUID id) {
+        jpaUserRepository.deleteById(id);
     }
 }

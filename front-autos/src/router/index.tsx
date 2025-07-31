@@ -4,6 +4,8 @@ import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import CarsPage from "../pages/CarsPage";
 import ProtectedRoute from "../components/ProtectedRoute";
+import AdminUsersPage from "../pages/AdminUsersPage";
+import AdminProtectedRoute from "../components/AdminProtectedRoute";
 import { useAuth } from "../context/AuthContext";
 
 export const router = createBrowserRouter([
@@ -21,6 +23,12 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute />,
         children: [
           { path: "cars", element: <CarsPage /> },
+        ],
+      },
+      {
+        element: <AdminProtectedRoute />,
+        children: [
+          { path: "admin/users", element: <AdminUsersPage /> },
         ],
       },
     ],

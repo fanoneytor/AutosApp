@@ -1,5 +1,6 @@
 package com.softtek.autos.infrastructure.persistence.entity;
 
+import com.softtek.autos.domain.model.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -18,6 +19,10 @@ public class UserEntity {
 
     @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CarEntity> cars = new ArrayList<>();

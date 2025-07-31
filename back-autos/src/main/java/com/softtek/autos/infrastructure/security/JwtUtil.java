@@ -1,5 +1,6 @@
 package com.softtek.autos.infrastructure.security;
 
+import com.softtek.autos.domain.model.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -16,9 +17,10 @@ public class JwtUtil {
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final long EXPIRATION = 1000 * 60 * 60; // 1 hora
 
-    public String generateToken(UUID userId) {
+    public String generateToken(UUID userId, Role role) {
         return Jwts.builder()
                 .setSubject(userId.toString())
+                .claim("role", role.name())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
                 .signWith(key)
@@ -33,6 +35,15 @@ public class JwtUtil {
                 .getBody();
 
         return UUID.fromString(claims.getSubject());
+    }
+
+    public Role getRoleFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return Role.valueOf(claims.get("role", String.class));
     }
 
     public boolean isValid(String token) {

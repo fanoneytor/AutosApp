@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { getCars, deleteCar, type CarSearchParams, } from "../services/carService";
+import { getCars, deleteCar, type CarSearchParams } from "../services/carService";
 import CarForm from "../components/CarForm";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import type { Car } from "../types/car";
+import { Link } from "react-router-dom";
+import { Role } from "../types/auth";
 
 export default function CarsPage() {
   const [cars, setCars] = useState<Car[]>([]);
@@ -19,7 +21,7 @@ export default function CarsPage() {
   });
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [debouncedSearchParams, setDebouncedSearchParams] = useState<CarSearchParams>({});
-  const { logout } = useAuth();
+  const { logout, userRole } = useAuth();
 
   const fetchCars = async (params: CarSearchParams) => {
     try {
@@ -30,7 +32,6 @@ export default function CarsPage() {
     }
   };
 
-  // Debounce general search query and individual filters
   useEffect(() => {
     const handler = setTimeout(() => {
       const combinedParams: CarSearchParams = {};
@@ -38,23 +39,21 @@ export default function CarsPage() {
       if (generalSearchQuery.trim() !== "") {
         combinedParams.query = generalSearchQuery.trim();
       } else {
-        // Only apply individual filters if no general search query
         for (const key in individualFilters) {
           const value = individualFilters[key as keyof Partial<Car>];
           if (value !== undefined && value !== null && String(value).trim() !== "") {
-            (combinedParams as any)[key] = value; // Cast to any to allow dynamic key assignment
+            (combinedParams as any)[key] = value;
           }
         }
       }
       setDebouncedSearchParams(combinedParams);
-    }, 500); // 500ms debounce time
+    }, 500);
 
     return () => {
       clearTimeout(handler);
     };
   }, [generalSearchQuery, individualFilters]);
 
-  // Fetch cars when debounced search params change
   useEffect(() => {
     fetchCars(debouncedSearchParams);
   }, [debouncedSearchParams]);
@@ -64,7 +63,7 @@ export default function CarsPage() {
     try {
       await deleteCar(id);
       toast.success("Auto eliminado exitosamente.");
-      fetchCars(debouncedSearchParams); // Refresh with current search params
+      fetchCars(debouncedSearchParams);
     } catch (error) {
       toast.error("Error al eliminar el auto.");
     }
@@ -83,7 +82,7 @@ export default function CarsPage() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingCar(null);
-    fetchCars(debouncedSearchParams); // Refresh cars after form submission with current search params
+    fetchCars(debouncedSearchParams);
   };
 
   const handleIndividualFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,12 +97,22 @@ export default function CarsPage() {
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Mis Autos</h1>
-        <button
-          onClick={logout}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-        >
-          Cerrar Sesión
-        </button>
+        <div className="flex space-x-2">
+          {userRole === Role.ADMIN && (
+            <Link
+              to="/admin/users"
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Admin Usuarios
+            </Link>
+          )}
+          <button
+            onClick={logout}
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          >
+            Cerrar Sesión
+          </button>
+        </div>
       </div>
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-2 sm:space-y-0 sm:space-x-4">
         <button

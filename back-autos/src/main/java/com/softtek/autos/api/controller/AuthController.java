@@ -36,7 +36,8 @@ public class AuthController {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
 
-        var token = jwtUtil.generateToken(userOpt.get().getId());
+        var user = userOpt.get();
+        var token = jwtUtil.generateToken(user.getId(), user.getRole());
         return ResponseEntity.ok(Map.of("token", token));
     }
 
