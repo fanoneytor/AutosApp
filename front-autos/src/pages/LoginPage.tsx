@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { loginUser } from "../services/authService";
+import { Link } from "react-router-dom";
 
 export default function LoginPage() {
     const [username, setUsername] = useState("");
@@ -42,6 +43,12 @@ export default function LoginPage() {
                 <button type="submit" className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700">
                     Ingresar
                 </button>
+                <p className="mt-4 text-center text-sm">
+                    ¿No tienes una cuenta?{" "}
+                    <Link to="/register" className="text-blue-600 hover:underline">
+                        Regístrate aquí
+                    </Link>
+                </p>
             </form>
         </div>
     );
