@@ -35,7 +35,12 @@ export default function CarForm({ car, onClose }: CarFormProps) {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "year" ? parseInt(value) : value,
+      [name]:
+        name === "year"
+          ? parseInt(value)
+          : name === "plate" || name === "color"
+          ? value.toUpperCase()
+          : value,
     }));
   };
 
