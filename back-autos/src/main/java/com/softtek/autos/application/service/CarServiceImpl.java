@@ -31,12 +31,12 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Car update(Car car) {
+    public Car update(Car car, UUID userId) {
         return carRepository.save(car);
     }
 
     @Override
-    public void delete(UUID id) {
+    public void delete(UUID id, UUID userId) {
         carRepository.delete(id);
     }
 }

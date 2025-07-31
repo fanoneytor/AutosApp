@@ -13,7 +13,7 @@ public interface CarService {
 
     Optional<Car> findById(UUID id);
 
-    Car update(Car car);
+    Car update(Car car, UUID userId);
 
-    void delete(UUID id);
+    void delete(UUID id, UUID userId);
 }
