@@ -15,6 +15,7 @@ export default function CarForm({ car, onClose }: CarFormProps) {
     year: 2000,
     plate: "",
     color: "",
+    imageUrl: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -28,6 +29,7 @@ export default function CarForm({ car, onClose }: CarFormProps) {
         year: new Date().getFullYear(), // Default to current year
         plate: "",
         color: "",
+        imageUrl: "",
       });
     }
     setErrors({}); // Clear errors when car changes
@@ -39,6 +41,7 @@ export default function CarForm({ car, onClose }: CarFormProps) {
     if (!data.model.trim()) newErrors.model = "El modelo es requerido.";
     if (!data.plate.trim()) newErrors.plate = "La placa es requerida.";
     if (!data.color.trim()) newErrors.color = "El color es requerido.";
+    if (!data.imageUrl || !data.imageUrl.trim()) newErrors.imageUrl = "La URL de la imagen es requerida.";
 
     if (data.year < 1900 || data.year > new Date().getFullYear() + 1) {
       newErrors.year = `El año debe estar entre 1900 y ${new Date().getFullYear() + 1}.`;
@@ -149,6 +152,18 @@ export default function CarForm({ car, onClose }: CarFormProps) {
           required
         />
         {errors.color && <p className="text-red-500 text-xs mt-1">{errors.color}</p>}
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">URL de Imagen</label>
+        <input
+          type="text"
+          name="imageUrl"
+          value={formData.imageUrl || ""}
+          onChange={handleChange}
+          className={`mt-1 block w-full border ${errors.imageUrl ? "border-red-500" : "border-gray-300"} rounded-md shadow-sm p-2`}
+          required
+        />
+        {errors.imageUrl && <p className="text-red-500 text-xs mt-1">{errors.imageUrl}</p>}
       </div>
       <div className="flex justify-end space-x-2">
         <button

@@ -17,8 +17,10 @@ public class CarEntity {
     private int year;
     private String plate;
     private String color;
+    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 }
+

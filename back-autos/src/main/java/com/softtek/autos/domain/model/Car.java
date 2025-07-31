@@ -12,5 +12,6 @@ public class Car {
     private int year;
     private String plate;
     private String color;
+    private String imageUrl;
     private UUID userId;
 }

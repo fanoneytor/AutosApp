@@ -8,6 +8,7 @@ public record CarDto(
         String model,
         int year,
         String plate,
-        String color
+        String color,
+        String imageUrl
 ) {
 }

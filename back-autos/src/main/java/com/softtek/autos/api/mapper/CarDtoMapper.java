@@ -11,7 +11,8 @@ public class CarDtoMapper {
                 car.getModel(),
                 car.getYear(),
                 car.getPlate(),
-                car.getColor()
+                car.getColor(),
+                car.getImageUrl()
         );
     }
 
@@ -23,6 +24,7 @@ public class CarDtoMapper {
         car.setYear(dto.year());
         car.setPlate(dto.plate());
         car.setColor(dto.color());
+        car.setImageUrl(dto.imageUrl());
         car.setUserId(userId);
         return car;
     }

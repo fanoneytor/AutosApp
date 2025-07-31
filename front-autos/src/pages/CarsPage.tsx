@@ -198,6 +198,13 @@ export default function CarsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {cars.map((car) => (
           <div key={car.id} className="bg-white p-4 rounded shadow-md">
+            {car.imageUrl && (
+              <img
+                src={car.imageUrl}
+                alt={`${car.brand} ${car.model}`}
+                className="w-full h-48 object-cover rounded-md mb-4"
+              />
+            )}
             <h3 className="text-lg font-semibold mb-2">{car.brand} {car.model}</h3>
             <p><strong>Año:</strong> {car.year}</p>
             <p><strong>Placa:</strong> {car.plate}</p>

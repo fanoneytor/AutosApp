@@ -5,4 +5,5 @@ export interface Car {
   year: number;
   plate: string;
   color: string;
+  imageUrl?: string;
 }
