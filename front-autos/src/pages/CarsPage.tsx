@@ -85,7 +85,7 @@ export default function CarsPage() {
         </button>
         <input
           type="text"
-          placeholder="Buscar por placa o modelo..."
+          placeholder="Buscar vehiculos..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full sm:w-1/2 px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"

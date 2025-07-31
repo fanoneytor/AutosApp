@@ -14,6 +14,6 @@ public interface JpaCarRepository extends JpaRepository<CarEntity, UUID> {
     List<CarEntity> findByUser(UserEntity user);
     Optional<CarEntity> findByIdAndUser(UUID carId, UserEntity user);
 
-    @Query("SELECT c FROM CarEntity c WHERE c.user = :user AND (LOWER(c.plate) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(c.model) LIKE LOWER(CONCAT('%', :query, '%')))")
+    @Query("SELECT c FROM CarEntity c WHERE c.user = :user AND (LOWER(c.plate) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(c.model) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(c.brand) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(CAST(c.year AS string)) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(c.color) LIKE LOWER(CONCAT('%', :query, '%')))")
     List<CarEntity> searchByUserAndQuery(@Param("user") UserEntity user, @Param("query") String query);
 }
