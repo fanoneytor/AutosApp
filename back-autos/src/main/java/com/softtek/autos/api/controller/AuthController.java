@@ -1,13 +1,12 @@
 package com.softtek.autos.api.controller;
 
+import com.softtek.autos.api.dto.LoginRequest;
 import com.softtek.autos.api.dto.RegisterRequest;
+import com.softtek.autos.application.service.AuthService;
 import com.softtek.autos.application.service.RegisterUserService;
-import com.softtek.autos.domain.repository.UserRepository;
-import com.softtek.autos.infrastructure.security.JwtUtil;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,26 +17,17 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    private final UserRepository userRepository;
     private final RegisterUserService registerUserService;
-    private final JwtUtil jwtUtil;
+    private final AuthService authService;
 
-    public AuthController(UserRepository userRepository, RegisterUserService registerUserService, JwtUtil jwtUtil) {
-        this.userRepository = userRepository;
+    public AuthController(RegisterUserService registerUserService, AuthService authService) {
         this.registerUserService = registerUserService;
-        this.jwtUtil = jwtUtil;
+        this.authService = authService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
-        var userOpt = userRepository.findByUsername(body.get("username"));
-
-        if (userOpt.isEmpty() || !BCrypt.checkpw(body.get("password"), userOpt.get().getPassword())) {
-            return ResponseEntity.status(401).body("Invalid credentials");
-        }
-
-        var user = userOpt.get();
-        var token = jwtUtil.generateToken(user.getId(), user.getRole());
+    public ResponseEntity<Map<String, String>> login(@RequestBody @Valid LoginRequest request) {
+        String token = authService.login(request.getUsername(), request.getPassword());
         return ResponseEntity.ok(Map.of("token", token));
     }
 
