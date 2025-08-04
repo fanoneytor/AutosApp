@@ -1,23 +1,20 @@
 package com.softtek.autos.application.service;
 
-import com.softtek.autos.domain.model.Car;
+import com.softtek.autos.api.dto.CarDto;
+import com.softtek.autos.api.dto.CarQueryFilters;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface CarService {
-    Car create(Car car);
+    CarDto create(CarDto carDto, UUID userId);
 
-    List<Car> findAllByUserId(UUID userId);
+    List<CarDto> findCars(UUID userId, CarQueryFilters filters);
 
-    List<Car> searchByUserIdAndQuery(UUID userId, String query);
+    Optional<CarDto> findById(UUID id);
 
-    List<Car> filterCars(UUID userId, String brand, String model, Integer year, String plate, String color);
-
-    Optional<Car> findById(UUID id);
-
-    Car update(Car car, UUID userId);
+    CarDto update(UUID id, CarDto carDto, UUID userId);
 
     void delete(UUID id, UUID userId);
 }
